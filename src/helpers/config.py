@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     FILE_DEFAULT_CHUNK_SIZE:  int
     
     MONGODB_URL: str
-    MONGODB_DB_NAME: str
+    MONGODB_DB_DATEBASE: str
     class Config:
         env_file = ".env"
         
