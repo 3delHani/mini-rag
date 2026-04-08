@@ -2,18 +2,17 @@ from fastapi import FastAPI
 from routes import base, data
 from motor.motor_asyncio import AsyncIOMotorClient
 from helpers.config import get_settings
+from contextlib import asynccontextmanager 
 
-app = FastAPI()
-
-@app.on_event("startup")
-async def startup_db_client():
+    
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     settings = get_settings()
-    app.mongodb_conn = AsyncIOMotorClient(settings.MONGODB_URL)
-    app.db_client = app.mongodb_conn[settings.MONGODB_DB_DATEBASE]
+    app.state.mongo_client = AsyncIOMotorClient(settings.MONGODB_URL) 
+    app.state.db_client = app.state.mongo_client[settings.MONGODB_DATABASE]
+    yield
+    app.state.mongo_client.close()
 
-@app.on_event("shutdown")
-async def shutdown_db_client():
-    app.mongodb_conn.close()
-
+app = FastAPI(lifespan=lifespan)
 app.include_router(base.base_router)
 app.include_router(data.data_router)
