@@ -48,3 +48,12 @@ set your environment variables in the `.env` file like `OPENAI_API_KEY` value.
 ```bash
 $ uvicorn main:app --reload --host 0.0.0.0 --port 5000
 ```
+
+## Run Docker Compose Services
+
+```bash
+$ cd docker
+$ sudo docker compose up -d
+```
+
+- update `.env` with your credentials

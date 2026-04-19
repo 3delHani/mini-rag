@@ -10,6 +10,7 @@ from .schemes.data import ProcessRequest
 from models.ProjectModel import ProjectModel
 from models.ChunkModel import ChunkModel
 from models.db_schemes import DataChunk
+#from typing import Any
 
 logger = logging.getLogger('uvicorn.error')
 
@@ -22,7 +23,7 @@ data_router = APIRouter(
 async def upload_data(request: Request, project_id: str, file: UploadFile,
                       app_settings: Settings = Depends(get_settings)):
     
-    project_model = ProjectModel(
+    project_model = await ProjectModel.create_instance(
         db_client=request.app.state.db_client
         )
     
@@ -65,8 +66,7 @@ async def upload_data(request: Request, project_id: str, file: UploadFile,
     return JSONResponse(
             content={
                 "signal": ResponseSignal.FILE_UPLOAD_SUCCESS.value,
-                "file_id": file_id,
-                #"project_id": str(project.id)
+                "file_id": file_id
                 })       
 
 @data_router.post("/process/{project_id}")
@@ -77,7 +77,7 @@ async def process_endpoint(request: Request ,project_id: str, process_request: P
     overlap_size = process_request.overlap_size
     do_reset = process_request.do_reset
     
-    project_model = ProjectModel(
+    project_model = await ProjectModel.create_instance(
         db_client=request.app.state.db_client
         )
     
@@ -94,17 +94,16 @@ async def process_endpoint(request: Request ,project_id: str, process_request: P
                                                           chunk_size=chunk_size,
                                                           overlap_size=20)
     
-    if len(file_chunks) == 0:
+    if not file_chunks:
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
             content={
                 "signal": ResponseSignal.FILE_PROCESSING_FAILED.value,
                 })
     
-    assert project.id is not None
+    #assert project.id is not None
     file_chunks_records = [
         DataChunk(
-            _id=None,
             chunk_text=chunk.page_content,
             chunk_metadata=chunk.metadata,
             chunk_order=i+1,
@@ -113,14 +112,14 @@ async def process_endpoint(request: Request ,project_id: str, process_request: P
         for i, chunk in enumerate(file_chunks)
     ]
     
-    chunk_model = ChunkModel(
+    chunk_model = await ChunkModel.create_instance(
         db_client=request.app.state.db_client
         )
     
     if do_reset == 1:
         _ = await chunk_model.delete_chunks_by_project_id(project_id=project_id)
     
-    no_records = chunk_model.insert_many_chunks(chunks=file_chunks_records)
+    no_records = await chunk_model.insert_many_chunks(chunks=file_chunks_records)
     
     return JSONResponse(
         content={
