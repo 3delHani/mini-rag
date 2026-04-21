@@ -8,6 +8,7 @@ class DataChunk(BaseModel):
     chunk_metadata: Dict[str, Any] = Field(default_factory=dict)
     chunk_order: int = Field(..., gt=0)
     chunk_project_id: Optional[ObjectId] = Field(None)
+    chunk_asset_id: Optional[ObjectId] = Field(None)
 
     model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True)
     
