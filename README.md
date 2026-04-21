@@ -57,3 +57,4 @@ $ sudo docker compose up -d
 ```
 
 - update `.env` with your credentials
+
