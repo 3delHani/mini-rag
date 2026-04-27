@@ -12,6 +12,19 @@ class Settings(BaseSettings):
 
     MONGODB_URL: str = "mongodb://localhost:27017"
     MONGODB_DATABASE: str = "mini-rag"
+    
+    GENERATION_BACKEND : str = "openai"
+    EMBEDDING_BACKEND : str = "cohere"
+
+    OPENAI_API_URL : str | None = None 
+    COHERE_API_KEY : str | None = None
+
+    GENERATION_MODEL_ID : str = "gpt-3.5-turbo-0125"
+    EMBEDDING_MODEL_ID : str = "embed-multilingual-light-v3.0"
+    EMBEDDING_MODEL_SIZE : int | None = None
+    INPUT_DEFAULT_MAX_CHARACTERS : int = 1024
+    GENERATION_DEFAULT_MAX_TOKENS : int = 200
+    GENERATION_DEFAULT_TEMPERATURE : float = 0.1
 
     model_config = SettingsConfigDict(env_file='.env')
 
