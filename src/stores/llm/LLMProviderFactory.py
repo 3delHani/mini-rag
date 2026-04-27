@@ -1,6 +1,6 @@
 from .LLMEnums import LLMEnums
-from .llm.providers.OpenAIProvider import OpenAIProvider
-from .llm.providers.CoHereProvider import CoHereProvider
+from .providers.OpenAIProvider import OpenAIProvider
+from .providers.CoHereProvider import CoHereProvider
 from typing import Any
 
 class LLMProviderFactory:
