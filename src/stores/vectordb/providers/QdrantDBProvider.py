@@ -6,17 +6,25 @@ from typing import Any, Dict, List, Optional
 
 class QdrantDBProvider(VectorDBInterface):
     
+    DISTANCE_MAPPING = {
+        DistanceMethodEnums.COSINE.value: models.Distance.COSINE,
+        DistanceMethodEnums.DOT.value: models.Distance.DOT,
+    }
+
     def __init__(self, db_path: str, distance_method: str):
-        
-        self.client: Optional[QdrantClient]
+
+        self.client: Optional[QdrantClient] = None
         self.db_path = db_path
-        self.distance_method: Any = None
-        
-        if distance_method == DistanceMethodEnums.COSINE.value:
-            self.distance_method = models.Distance.COSINE
-        elif distance_method == DistanceMethodEnums.DOT.value:
-            self.distance_method = models.Distance.DOT
-            
+
+        normalized = (distance_method or "").strip().lower()
+        if normalized not in self.DISTANCE_MAPPING:
+            supported = ", ".join(sorted(self.DISTANCE_MAPPING.keys()))
+            raise ValueError(
+                f"Unsupported distance method {distance_method!r} for Qdrant. "
+                f"Supported values: {supported}."
+            )
+        self.distance_method: Any = self.DISTANCE_MAPPING[normalized]
+
         self.logger = logging.getLogger(__name__)
         
     def connect(self):
