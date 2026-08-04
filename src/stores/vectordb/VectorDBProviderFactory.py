@@ -11,7 +11,7 @@ class VectorDBProviderFactory:
         
     def create(self, provider: str) -> Any:
         if provider == VectorDBType.QDRANT.value:
-            db_path = self.base_controller.get_database_path(db_name=self.config.VECTOR_DB_NAME)
+            db_path = self.base_controller.get_database_path(db_name=self.config.VECTOR_DB_BACKEND)
             return QdrantDBProvider(
                 db_path=db_path,
                 distance_method=self.config.VECTOR_DB_DISTANCE_METHOD,

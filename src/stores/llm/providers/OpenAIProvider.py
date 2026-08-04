@@ -40,7 +40,7 @@ class OpenAIProvider(LLMInterface):
         return text[:self.default_input_max_characters].strip()
         
     def generate_text(self, prompt: str, chat_history: list[Any] = [], max_output_tokens: int | None = None,
-                            temprature: float | None = None) -> Any:
+                            temperature: float | None = None) -> Any:
         if not self.client:
             self.logger.error("Embedding model for OpenAI was not set.")
             return None     
@@ -50,7 +50,7 @@ class OpenAIProvider(LLMInterface):
             return None
         
         max_output_tokens = max_output_tokens if max_output_tokens is not None else self.default_generation_max_output_tokens
-        temprature = temprature if temprature is not None else self.default_generation_temperature 
+        temperature = temperature if temperature is not None else self.default_generation_temperature 
         
         chat_history.append(
             self.construct_prompt(prompt, OpenAIEnums.USER.value)
@@ -60,7 +60,7 @@ class OpenAIProvider(LLMInterface):
             model = self.generation_model_id or "gpt-5.4-mini",
             messages = chat_history,
             max_tokens = max_output_tokens,
-            temperature = temprature
+            temperature = temperature
         )
         
         if not response or not response.choices or not len(response.choices) == 0 or not response.choices[0].message:

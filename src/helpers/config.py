@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing import List
 
 class Settings(BaseSettings):
 
@@ -14,15 +15,17 @@ class Settings(BaseSettings):
     MONGODB_DATABASE: str = "mini-rag"
     
     # ============================== llm config ==============================
-    
+    GENERATION_BACKEND_OPTIONS : List[str] = ["OPENAI", "COHERE"]
+    EMBEDDING_BACKEND_OPTIONS : List[str] = ["OPENAI", "COHERE", "VOYAGE"]
     GENERATION_BACKEND : str = "openai"
-    EMBEDDING_BACKEND : str = "cohere"
+    EMBEDDING_BACKEND : str = "cohere0"
 
     OPENAI_API_URL : str | None = None 
     COHERE_API_KEY : str | None = None
+    VOYAGE_API_KEY : str | None = None
 
     GENERATION_MODEL_ID : str = "gpt-3.5-turbo-0125"
-    EMBEDDING_MODEL_URL : str = "embed-multilingual-light-v3.0"
+    EMBEDDING_MODEL_ID : str = "voyage-4-large"
     EMBEDDING_MODEL_SIZE : int | None = None
     
     INPUT_DEFAULT_MAX_CHARACTERS : int = 1024

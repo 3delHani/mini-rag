@@ -10,7 +10,7 @@ class QdrantDBProvider(VectorDBInterface):
         
         self.client: Optional[QdrantClient]
         self.db_path = db_path
-        self.distance_method: Any = None
+        self.distance_method: models.Distance = models.Distance.COSINE
         
         if distance_method == DistanceMethodEnums.COSINE.value:
             self.distance_method = models.Distance.COSINE
@@ -107,7 +107,7 @@ class QdrantDBProvider(VectorDBInterface):
             metadata = [None] * len(texts)
             
         if record_ids is None:
-            record_ids = [None ] * len(texts)
+            record_ids = list(range(0, len(texts)))
             
         for i in range(0, len(texts), batch_size):
             batch_end = i + batch_size
@@ -115,10 +115,11 @@ class QdrantDBProvider(VectorDBInterface):
             batch_texts = texts[i: batch_end]
             batch_vectors = vectors[i: batch_end]
             batch_metadata = metadata[i: batch_end]
+            batch_record_ids = record_ids[i: batch_end]
             
             batch_records = [
                 models.PointStruct(
-                    id=record_ids[x],
+                    id=batch_record_ids[x],
                     vector=batch_vectors[x],
                     payload={"text": batch_texts[x], "metadata": batch_metadata[x]}
                 )
@@ -139,10 +140,10 @@ class QdrantDBProvider(VectorDBInterface):
     def search_by_vector(self, collection_name: str, vector: List[float], limit: int = 10) -> Any:
         if self.client is None:
             raise ValueError("Client is not initialized")
-        
+
         return self.client.query_points(
             collection_name=collection_name,
-            query_vector=vector,
+            query=vector,
             limit=limit,
             with_payload=True
         )

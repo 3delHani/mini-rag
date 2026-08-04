@@ -13,3 +13,5 @@ pydantic-mongo==3.1.0
 openai==2.32.0
 cohere==6.1.0
 qdrant-client==1.17.1
+google-generativeai==0.8.6
+voyageai==0.4.0

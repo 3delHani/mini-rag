@@ -13,7 +13,7 @@ class LLMInterface(ABC):
     
     @abstractmethod
     def generate_text(self, prompt: str, chat_history: list[Any] = [], max_output_tokens: int | None = None,
-                            temprature: float | None = None) -> Any:
+                            temperature: float | None = None) -> Any:
         pass
     
     @abstractmethod

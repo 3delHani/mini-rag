@@ -53,6 +53,30 @@
         "header": []
       },
       "response": []
+    },
+    {
+      "name": "nlp_index_push",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "nlp_index_info",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "nlp_index_search",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
     }
   ],
   "event": [
