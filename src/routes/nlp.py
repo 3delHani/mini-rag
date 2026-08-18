@@ -38,7 +38,8 @@ async def index_project(request: Request, project_id : str, push_request: PushRe
     nlp_controller = NLPController(
         vectordb_client = request.app.state.vectordb_client,
         embedding_client = request.app.state.embedding_client,
-        generation_client= request.app.state.generation_client
+        generation_client= request.app.state.generation_client,
+        template_parser= request.app.state.template_parser
     )
     
     has_records = True
@@ -93,9 +94,10 @@ async def get_project_index_info(request: Request, project_id : str):
     )
         
     nlp_controller = NLPController(
-        vectordb_client = request.app.state.vectordb_client,
-        embedding_client = request.app.state.embedding_client,
-        generation_client= request.app.state.generation_client
+        vectordb_client=request.app.state.vectordb_client,
+        embedding_client=request.app.state.embedding_client,
+        generation_client=request.app.state.generation_client,
+        template_parser=request.app.state.template_parser,
     )
     
     collection_info = nlp_controller.get_vector_collection_info(project=project)
@@ -121,7 +123,8 @@ async def search_index(request: Request, project_id: str, search_request: Search
     nlp_controller = NLPController(
         vectordb_client=request.app.state.vectordb_client,
         embedding_client=request.app.state.embedding_client,
-        generation_client=request.app.state.generation_client
+        generation_client=request.app.state.generation_client,
+        template_parser=request.app.state.template_parser
     )
 
     query_text = getattr(search_request, "text", "")
@@ -156,3 +159,46 @@ async def search_index(request: Request, project_id: str, search_request: Search
             }
         )
         
+@nlp_router.post("/index/answer/{project_id}")
+async def answer_rag_question(request: Request, project_id: str, search_request: SearchRequest):
+
+    project_model = await ProjectModel.create_instance(
+        db_client=request.app.state.db_client
+    )
+
+    project = await project_model.get_project_or_create_one(
+        project_id=project_id
+    )
+
+    nlp_controller = NLPController(
+        vectordb_client=request.app.state.vectordb_client,
+        embedding_client=request.app.state.embedding_client,
+        generation_client=request.app.state.generation_client,
+        template_parser=request.app.state.template_parser
+    )
+    
+    limit = search_request.limit or 4
+
+    answer, full_prompt, chat_history = nlp_controller.answer_rag_question(
+        project=project,
+        query=search_request.text,
+        limit=limit,
+    )
+    
+    if not answer:
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={
+                "signal": ResponseSignal.RAG_ANSWER_ERROR.value
+            }
+        )
+        
+    return JSONResponse(
+            content={
+                "signal": ResponseSignal.RAG_ANSWER_SUCCESS.value,
+                "answer": answer,
+                "full_prompt": full_prompt,
+                "chat_history": chat_history
+            }
+        )
+            

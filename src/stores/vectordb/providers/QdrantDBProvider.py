@@ -3,6 +3,7 @@ from ..VectorDBInterface import VectorDBInterface
 from ..VectorDBEnums import DistanceMethodEnums
 import logging
 from typing import Any, Dict, List, Optional
+from models.db_schemes import RetrievedDocument
 
 class QdrantDBProvider(VectorDBInterface):
     
@@ -141,9 +142,22 @@ class QdrantDBProvider(VectorDBInterface):
         if self.client is None:
             raise ValueError("Client is not initialized")
 
-        return self.client.query_points(
+        response = self.client.query_points(
             collection_name=collection_name,
             query=vector,
             limit=limit,
             with_payload=True
         )
+        
+        results = response.points
+        
+        if not results:
+            return None
+        
+        return [
+            RetrievedDocument(
+                score=result.score,
+                text=(result.payload or {}).get("text", ""),
+            )
+            for result in results
+        ]

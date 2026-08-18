@@ -24,9 +24,11 @@ class OpenAIProvider(LLMInterface):
         self.embedding_size = None
         
         self.client = OpenAI(
-            api_key=self.api_key, base_url=self.api_url
+            api_key=self.api_key,
+            base_url=self.api_url if self.api_url and len(self.api_url) else None
             )
         
+        self.enums = OpenAIEnums
         self.logger = logging.getLogger(__name__)
         
     def set_generation_model(self, model_id: str):
@@ -42,13 +44,13 @@ class OpenAIProvider(LLMInterface):
     def generate_text(self, prompt: str, chat_history: list[Any] = [], max_output_tokens: int | None = None,
                             temperature: float | None = None) -> Any:
         if not self.client:
-            self.logger.error("Embedding model for OpenAI was not set.")
-            return None     
-        
-        if not self.embedding_model_id:
-            self.logger.error("Embedding model for OpenAI was not set.")
+            self.logger.error("OpenAI client was not initialized.")
             return None
-        
+
+        if not self.generation_model_id:
+            self.logger.error("Generation model for OpenAI was not set.")
+            return None
+
         max_output_tokens = max_output_tokens if max_output_tokens is not None else self.default_generation_max_output_tokens
         temperature = temperature if temperature is not None else self.default_generation_temperature 
         
@@ -57,14 +59,14 @@ class OpenAIProvider(LLMInterface):
             )
         
         response = self.client.chat.completions.create(
-            model = self.generation_model_id or "gpt-5.4-mini",
+            model = self.generation_model_id or "gpt-3.5-turbo-0125",
             messages = chat_history,
             max_tokens = max_output_tokens,
             temperature = temperature
         )
         
-        if not response or not response.choices or not len(response.choices) == 0 or not response.choices[0].message:
-            self.logger.error("Error while generating text with OpenA")
+        if not response or not response.choices or len(response.choices) == 0 or not response.choices[0].message:
+            self.logger.error("Error while generating text with OpenAI")
             return None
         
         return response.choices[0].message.content
