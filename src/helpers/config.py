@@ -15,16 +15,14 @@ class Settings(BaseSettings):
     MONGODB_DATABASE: str = "mini-rag"
     
     # ============================== llm config ==============================
-    GENERATION_BACKEND_OPTIONS : List[str] = ["OPENAI", "COHERE"]
-    EMBEDDING_BACKEND_OPTIONS : List[str] = ["OPENAI", "COHERE", "VOYAGE"]
     GENERATION_BACKEND : str = "openai"
-    EMBEDDING_BACKEND : str = "cohere0"
+    EMBEDDING_BACKEND : str = "cohere"
 
-    OPENAI_API_URL : str | None = None 
+    OPENAI_API_URL : str | None = None
     COHERE_API_KEY : str | None = None
     VOYAGE_API_KEY : str | None = None
 
-    GENERATION_MODEL_ID : str = "gpt-3.5-turbo-0125"
+    GENERATION_MODEL_ID : str | None = None
     EMBEDDING_MODEL_ID : str = "voyage-4-large"
     EMBEDDING_MODEL_SIZE : int | None = None
     

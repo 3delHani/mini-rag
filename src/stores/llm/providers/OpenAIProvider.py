@@ -59,7 +59,7 @@ class OpenAIProvider(LLMInterface):
             )
         
         response = self.client.chat.completions.create(
-            model = self.generation_model_id or "gpt-3.5-turbo-0125",
+            model = self.generation_model_id,
             messages = chat_history,
             max_tokens = max_output_tokens,
             temperature = temperature
