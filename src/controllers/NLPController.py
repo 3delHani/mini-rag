@@ -83,17 +83,17 @@ class NLPController(BaseController):
         retrieved_docs = self.search_vector_db(project=project, text=query, limit=limit)
         
         if not retrieved_docs or len(retrieved_docs) == 0:
-            return None
+            return answer, full_prompt, chat_history
         
         system_prompt = self.template_parser.get("rag", "system_prompt")
         
-        documents_prompt: List[str] = [
+        documents_prompt: List[str] = "\n".join([
             self.template_parser.get("rag", "document_prompt", {
                                 "doc_num": idx + 1,
-                                "chunk_text": doc.get("text") if isinstance(doc, dict) else getattr(doc, "text", ""),
+                                "chunk_text": self.generation_client.process_text(doc.get("text") if isinstance(doc, dict) else getattr(doc, "text", "")),
                             })
             for idx, doc in enumerate(retrieved_docs)
-        ]
+        ])
         
         footer_prompt = self.template_parser.get("rag", "footer_prompt")
         

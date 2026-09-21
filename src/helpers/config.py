@@ -11,9 +11,12 @@ class Settings(BaseSettings):
     FILE_MAX_SIZE_MB: int = 10
     FILE_DEFAULT_CHUNK_SIZE: int = 512000
 
-    MONGODB_URL: str = "mongodb://localhost:27017"
-    MONGODB_DATABASE: str = "mini-rag"
-    
+    POSTGRES_USERNAME: str 
+    POSTGRES_PASSWORD: str  
+    POSTGRES_HOST: str = "localhost"
+    POSTGRES_PORT: int = 5432
+    POSTGRES_MAIN_DATABASE: str = "mini_rag"
+
     # ============================== llm config ==============================
     GENERATION_BACKEND : str = "openai"
     EMBEDDING_BACKEND : str = "cohere"

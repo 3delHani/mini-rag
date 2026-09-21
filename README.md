@@ -6,6 +6,13 @@ This is a minimal implementation of the rag model for question answering
 
 python 3.14 or later 
 
+#### Install Dependencies
+
+```bash
+sudo apt update
+sudo apt install libpq-dev gcc python3-dev
+```
+
 ### Install python using MiniConda
 
 1) Download and install miniconda from [here](https://docs.anaconda.com/free/miniconda/#quick-command-line-install)
