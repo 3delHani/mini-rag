@@ -91,7 +91,7 @@ class CoHereProvider(LLMInterface):
 
         response = self.client.embed(
             model = self.embedding_model_id,
-            texts = text,
+            texts = [ self.process_text(t) for t in text ],
             input_type = input_type,
             embedding_types = ['float'],
         )
@@ -100,9 +100,8 @@ class CoHereProvider(LLMInterface):
             self.logger.error("Error while embedding text with CoHere")
             return None
 
-        return cast(Any, response.embeddings).float[0]
+        return [f for f in cast(Any, response.embeddings).float ]
     
-        
     def construct_prompt(self, prompt: str, role: str) -> Any:
         return {
             "role": role,

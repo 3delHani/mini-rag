@@ -26,7 +26,7 @@ async def lifespan(app: FastAPI):
     )
 
     llm_provider_factory = LLMProviderFactory(settings)
-    vectordb_provider_factory = VectorDBProviderFactory(settings)
+    vectordb_provider_factory = VectorDBProviderFactory(config=settings, db_client=app.state.db_client)
 
     # generation client
     app.state.generation_client = llm_provider_factory.create(provider=settings.GENERATION_BACKEND)
@@ -41,7 +41,7 @@ async def lifespan(app: FastAPI):
 
     # vector database client
     app.state.vectordb_client = vectordb_provider_factory.create(provider=settings.VECTOR_DB_BACKEND)
-    app.state.vectordb_client.connect()
+    await app.state.vectordb_client.connect()
 
     yield
 
