@@ -1,0 +1,17 @@
+workspace:
+  id: 4c87711c-7c7b-4f6b-8679-0c99e597bf32
+
+localResources:
+  environments:
+    - ../environments/New Environment.environment.yaml
+
+# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
+
+cloudResources:
+  collections: {}
+
+dependencies:
+  collections:
+    35186639-24cc5d6d-fcd4-497e-a0ee-f4e131e1806f:
+      name: mini-rag
+      path: ../postman/.dependencies/collections/mini-rag

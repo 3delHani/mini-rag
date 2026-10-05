@@ -48,6 +48,12 @@ $ pip install -r requirements.txt
 $ cp .env.example .env
 ```
 
+### Run Alembic Migration
+
+```bash
+$ alembic upgrade head
+```
+
 set your environment variables in the `.env` file like `OPENAI_API_KEY` value. 
 
 ## Run the FastAPI server

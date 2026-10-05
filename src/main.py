@@ -5,9 +5,9 @@ from contextlib import asynccontextmanager
 from stores.llm.LLMProviderFactory import LLMProviderFactory
 from stores.vectordb.VectorDBProviderFactory import VectorDBProviderFactory
 from stores.templates.template_parser import TemplateParser
-from sqlalchemy.ext.asyncio import create_async_engine ,AsyncSession, async_sessionmaker
-from sqlalchemy.orm import sessionmaker
-    
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
+from utils.metrics import setup_metrics
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     settings = get_settings()
@@ -16,7 +16,7 @@ async def lifespan(app: FastAPI):
     
     app.state.db_engine = create_async_engine(postgres_conn)
     
-    app.state.db_client = sessionmaker(
+    app.state.db_client = async_sessionmaker(
         bind=app.state.db_engine, class_=AsyncSession, expire_on_commit=False,
     )
 
@@ -46,10 +46,12 @@ async def lifespan(app: FastAPI):
     yield
 
     app.state.db_engine.dispose()
-    app.state.vectordb_client.disconnect()
+    await app.state.vectordb_client.disconnect()
 
 
 app = FastAPI(lifespan=lifespan)
+
+setup_metrics(app)
 
 app.include_router(base.base_router)
 app.include_router(data.data_router)
