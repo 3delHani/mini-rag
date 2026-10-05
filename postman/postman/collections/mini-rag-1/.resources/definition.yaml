@@ -1,4 +1,0 @@
-$kind: collection
-name: mini-rag
-variables:
-  api: http://localhost:5000

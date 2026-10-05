@@ -1,4 +1,0 @@
-$kind: collection
-description: ""
-variables:
-  api: http://localhost:5000

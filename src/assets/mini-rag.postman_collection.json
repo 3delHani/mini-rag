@@ -1,0 +1,112 @@
+{
+  "info": {
+    "_postman_id": "24cc5d6d-fcd4-497e-a0ee-f4e131e1806f",
+    "name": "mini-rag",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "35186639"
+  },
+  "item": [
+    {
+      "name": "Welcome-request",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "Upload",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "uuid": "4e378339-5de1-40a5-8c9d-d48ee964cb83",
+              "src": "postman-cloud:///1f116ed6-225a-4310-bf21-dfa60bacbc87"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{api}}/api/v1/data/upload/1",
+          "host": [
+            "{{api}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "data",
+            "upload",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Process",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "nlp_index_push",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "nlp_index_info",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "nlp_index_search",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "api",
+      "value": "http://localhost:5000"
+    }
+  ]
+}

@@ -7,66 +7,62 @@ from models.db_schemes import RetrievedDocument
 
 class QdrantDBProvider(VectorDBInterface):
     
-    def __init__(self, db_client: str, default_vector_size: int = 786,
-                       distance_method: str = None, index_threshold: int = 100):
+    def __init__(self, db_path: str, distance_method: str):
         
         self.client: Optional[QdrantClient]
-        self.db_client = db_client
+        self.db_path = db_path
         self.distance_method: models.Distance = models.Distance.COSINE
-        self.default_vector_size = default_vector_size
         
         if distance_method == DistanceMethodEnums.COSINE.value:
             self.distance_method = models.Distance.COSINE
         elif distance_method == DistanceMethodEnums.DOT.value:
             self.distance_method = models.Distance.DOT
             
-        self.logger = logging.getLogger('uvicorn')
+        self.logger = logging.getLogger(__name__)
         
-    async def connect(self):
-        self.client = QdrantClient(path=self.db_client)
+    def connect(self):
+        self.client = QdrantClient(path=self.db_path)
         
-    async def disconnect(self):
+    def disconnect(self):
         self.client = None
         
-    async def is_collection_existed(self, collection_name: str) -> bool:
+    def is_collection_existed(self, collection_name: str) -> bool:
         if self.client is None:
             raise ValueError("Client is not initialized")
         
         return self.client.collection_exists(collection_name=collection_name)
     
-    async def list_all_collections(self) -> List[Any]:
+    def list_all_collections(self) -> List[Any]:
         if self.client is None:
             raise ValueError("Client is not initialized")
         
         return self.client.get_collections().collections
     
-    async def get_collection_info(self, collection_name: str) -> Any:
+    def get_collection_info(self, collection_name: str) -> Any:
         if self.client is None:
             raise ValueError("Client is not initialized")
         
         return self.client.get_collection(collection_name=collection_name)
     
-    async def delete_collection(self, collection_name: str) -> bool:
+    def delete_collection(self, collection_name: str) -> bool:
         if self.client is None:
             raise ValueError("Client is not initialized")
         
         if self.is_collection_existed(collection_name):
-            self.logger.info(f"Deleting collection: {collection_name}")
             return self.client.delete_collection(collection_name=collection_name)
+        return False
     
-    async def create_collection(self, collection_name: str,
+    def create_collection(self, collection_name: str,
                                 embedding_size: int,
                                 do_reset: bool = False) -> None:
         if self.client is None:
             raise ValueError("Client is not initialized")
         
         if do_reset:
-            _ = self.delete_collection(collection_name=collection_name)
+            self.delete_collection(collection_name=collection_name)
         
         if not self.is_collection_existed(collection_name=collection_name):
-            self.logger.info(f"Creating new Qdrant collection: {collection_name}")
-            
-            _ = self.client.create_collection(
+            self.client.create_collection(
                 collection_name=collection_name,
                 vectors_config=models.VectorParams(
                                                    size=embedding_size,
@@ -74,7 +70,7 @@ class QdrantDBProvider(VectorDBInterface):
                                     )
             )
             
-    async def insert_one(self, collection_name: str, text: str, vector: List[float],
+    def insert_one(self, collection_name: str, text: str, vector: List[float],
                          metadata: Dict[str, Any], 
                          record_id: Any = None) -> bool:
         if self.client is None:
@@ -101,7 +97,7 @@ class QdrantDBProvider(VectorDBInterface):
         
         return True
     
-    async def insert_many(self, collection_name: str, texts: List[str], vectors: List[List[float]],
+    def insert_many(self, collection_name: str, texts: List[str], vectors: List[List[float]],
                              metadata: List[Any] | None = None,
                              record_ids: List[Any] | None = None,
                              batch_size: int = 50) -> Any :
@@ -142,7 +138,7 @@ class QdrantDBProvider(VectorDBInterface):
             
         return True 
     
-    async def search_by_vector(self, collection_name: str, vector: List[float], limit: int = 10) -> Any:
+    def search_by_vector(self, collection_name: str, vector: List[float], limit: int = 10) -> Any:
         if self.client is None:
             raise ValueError("Client is not initialized")
 

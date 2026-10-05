@@ -11,12 +11,9 @@ class Settings(BaseSettings):
     FILE_MAX_SIZE_MB: int = 10
     FILE_DEFAULT_CHUNK_SIZE: int = 512000
 
-    POSTGRES_USERNAME: str 
-    POSTGRES_PASSWORD: str  
-    POSTGRES_HOST: str = "localhost"
-    POSTGRES_PORT: int = 5432
-    POSTGRES_MAIN_DATABASE: str = "mini_rag"
-
+    MONGODB_URL: str = "mongodb://localhost:27017"
+    MONGODB_DATABASE: str = "mini-rag"
+    
     # ============================== llm config ==============================
     GENERATION_BACKEND : str = "openai"
     EMBEDDING_BACKEND : str = "cohere"
@@ -24,8 +21,7 @@ class Settings(BaseSettings):
     OPENAI_API_URL : str | None = None
     COHERE_API_KEY : str | None = None
     VOYAGE_API_KEY : str | None = None
-    
-    GENERATION_MODEL_ID_LITERAL : List[str] = None
+
     GENERATION_MODEL_ID : str | None = None
     EMBEDDING_MODEL_ID : str = "voyage-4-large"
     EMBEDDING_MODEL_SIZE : int | None = None
@@ -35,11 +31,9 @@ class Settings(BaseSettings):
     GENERATION_DEFAULT_TEMPERATURE : float = 0.1
     
     # ============================== Vector db config ==============================
-    VECTOR_DB_BACKEND_LITERAL : List[str] = None
     VECTOR_DB_BACKEND : str = "QDRANT"
     VECTOR_DB_PATH : str = "qdrant_db"
     VECTOR_DB_DISTANCE_METHOD : str | None = None
-    VECTOR_DB_PGVEC_INDEX_THRESHOLD : int = 100
     
     PRIMARY_LANG : str = "en"
     DEFAULT_LANG : str = "en"
