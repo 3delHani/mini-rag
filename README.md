@@ -6,6 +6,13 @@ This is a minimal implementation of the rag model for question answering
 
 python 3.14 or later 
 
+#### Install Dependencies
+
+```bash
+sudo apt update
+sudo apt install libpq-dev gcc python3-dev
+```
+
 ### Install python using MiniConda
 
 1) Download and install miniconda from [here](https://docs.anaconda.com/free/miniconda/#quick-command-line-install)
@@ -39,6 +46,12 @@ $ pip install -r requirements.txt
 
 ```bash
 $ cp .env.example .env
+```
+
+### Run Alembic Migration
+
+```bash
+$ alembic upgrade head
 ```
 
 set your environment variables in the `.env` file like `OPENAI_API_KEY` value. 
